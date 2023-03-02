@@ -1,8 +1,9 @@
-import { checkSessionIdExists } from './../middlewares/checkSessionIdExists';
-import { FastifyInstance } from "fastify";
-import { string, z } from 'zod';
-import { knex } from "../database";
 import { randomUUID } from 'node:crypto';
+import { FastifyInstance } from "fastify";
+import { z } from 'zod';
+
+import { checkSessionIdExists } from './../middlewares/checkSessionIdExists';
+import { knex } from "../database";
 
 export const transactionsRoutes = async (app: FastifyInstance) => {
 
