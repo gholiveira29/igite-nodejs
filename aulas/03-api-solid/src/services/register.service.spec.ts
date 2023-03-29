@@ -1,16 +1,20 @@
-import { expect, describe, it } from 'vitest';
+import { expect, describe, it, beforeEach } from 'vitest';
 import { compare } from 'bcryptjs';
 
 import { UserAlreadyExistsError } from './error/user-already-exists-error';
 import { RegisterService } from './register.service';
 import { InMemoryUsersRepository } from '@/repositories/inMemory/inMemoryUsersRepository';
 
-describe('Register Use Case', () => {
-    it('Should hash user password upon registration', async () => {
-        const inMemoryUsersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(inMemoryUsersRepository);
+let inMemoryUsersRepository: InMemoryUsersRepository;
+let sut: RegisterService;
 
-        const { user } = await registerService.execute({
+describe('Register Use Case', () => {
+    beforeEach(() => {
+        inMemoryUsersRepository = new InMemoryUsersRepository();
+        sut = new RegisterService(inMemoryUsersRepository);
+    });
+    it('Should hash user password upon registration', async () => {
+        const { user } = await sut.execute({
             name: 'Henrique',
             email: 'henriqueTeste@gmail.com',
             password: '12345678910'
@@ -21,19 +25,16 @@ describe('Register Use Case', () => {
     });
 
     it('should not be able to register with same email twice', async () => {
-        const inMemoryUsersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(inMemoryUsersRepository);
-
         const email = 'henriqueTeste@gmail.com';
 
-        await registerService.execute({
+        await sut.execute({
             name: 'Henrique',
             email,
             password: '12345678910'
         });
 
         await expect(() =>
-            registerService.execute({
+            sut.execute({
                 name: 'Henrique',
                 email,
                 password: '12345678910'
@@ -43,10 +44,7 @@ describe('Register Use Case', () => {
     });
 
     it('Should be able to register', async () => {
-        const inMemoryUsersRepository = new InMemoryUsersRepository();
-        const registerService = new RegisterService(inMemoryUsersRepository);
-
-        const { user } = await registerService.execute({
+        const { user } = await sut.execute({
             name: 'Henrique',
             email: 'henriqueTeste@gmail.com',
             password: '12345678910'
