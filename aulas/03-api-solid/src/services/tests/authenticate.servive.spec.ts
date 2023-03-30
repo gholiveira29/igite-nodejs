@@ -1,8 +1,8 @@
 import { hash } from 'bcryptjs';
 import { expect, describe, it, beforeEach } from 'vitest';
 import { InMemoryUsersRepository } from '@/repositories/inMemory/inMemoryUsersRepository';
-import { AuthenticateService } from './authenticate.service';
-import { InvalidCredentialsError } from './error/invalidCredentialsError';
+import { AuthenticateService } from '../authenticate.service';
+import { InvalidCredentialsError } from '../error/invalidCredentialsError';
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let sut: AuthenticateService;
@@ -29,7 +29,7 @@ describe('Authenticante Use Case', () => {
     });
 
     it('Should not be able to authenticate with wrong email', async () => {
-        expect(() => sut.execute({
+        await expect(() => sut.execute({
             email: 'henriqueTeste@gmail.com',
             password: '12345678910'
         })).rejects.toBeInstanceOf(InvalidCredentialsError);
@@ -43,7 +43,7 @@ describe('Authenticante Use Case', () => {
             password_hash: await hash('12345678910', 6)
         });
 
-        expect(() => sut.execute({
+        await expect(() => sut.execute({
             email: 'henriqueTeste@gmail.com',
             password: '12345678'
         })).rejects.toBeInstanceOf(InvalidCredentialsError);
