@@ -3,6 +3,16 @@ import { CheckInRepository } from '@/repositories/ckeck-ins-repository';
 import { CheckIn, Prisma } from '@prisma/client';
 
 export class InMemoryCheckInsRepository implements CheckInRepository {
+    async findByUserIdOnDate(userId: string, date: Date) {
+        const checkInOnSomeDate = this.items.find((checkIn) => checkIn.user_id === userId);
+
+        if (!checkInOnSomeDate)
+            return null;
+
+        return checkInOnSomeDate;
+
+    }
+
     public items: CheckIn[] = [];
     async create(data: Prisma.CheckInUncheckedCreateInput) {
         const checkIn = {
